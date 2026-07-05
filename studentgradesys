@@ -12,6 +12,7 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -50,7 +51,7 @@ StudentRecord collectStudentData() {
     StudentRecord student;
 
     cout << "Enter student name: ";
-    cin >> student.name;
+    getline(cin, student.name);
 
     cout << "Enter index number: ";
     cin >> student.indexNumber;
@@ -92,9 +93,23 @@ void printReport(const StudentRecord& student, const ScoreSummary& summary) {
 }
 
 int main() {
-    StudentRecord student = collectStudentData();
-    ScoreSummary summary = calculateSummary(student);
-    printReport(student, summary);
+    vector<StudentRecord> students;   // Temporary storage for all students entered
+
+    char addAnother = 'y';
+    while (addAnother == 'y' || addAnother == 'Y') {
+        StudentRecord student = collectStudentData();
+        students.push_back(student);
+
+        cout << "Add another student? (y/n): ";
+        cin >> addAnother;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clear newline before next getline
+    }
+
+    // Print a report for every student stored in the vector
+    for (const StudentRecord& student : students) {
+        ScoreSummary summary = calculateSummary(student);
+        printReport(student, summary);
+    }
 
     return 0;
 }
